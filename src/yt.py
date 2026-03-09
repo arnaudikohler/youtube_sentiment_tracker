@@ -14,3 +14,15 @@ def searchByTopic(topic, max_results):
     response = request.execute()
 
     return response
+
+
+def extract(video_list):
+    result = []
+    for i in video_list["items"]:
+        result.append((
+            i["snippet"]["title"],
+            i["snippet"]["description"],
+            i["id"]["videoId"]
+        ))
+
+    return result
