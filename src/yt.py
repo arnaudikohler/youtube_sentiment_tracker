@@ -17,15 +17,14 @@ def searchByTopic(topic, max_results):
     return response
 
 
-def extract(video_list):
-    result = []
-    for i in video_list["items"]:
-        result.append((
-            i["snippet"]["title"],
-            i["snippet"]["description"],
-            i["id"]["videoId"]
-        ))
-
+def extract_Title_Desc(video_list): 
+    result = [] 
+    for i in video_list["items"]: 
+        result.append({
+            "title": i["snippet"]["title"],
+            "description": i["snippet"]["description"],
+            "video_id": i["id"]["videoId"]
+        })
     return result
 
 def captionExtractor(video_id):
