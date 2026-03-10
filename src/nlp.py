@@ -5,12 +5,6 @@ classifier = pipeline(
     model="cardiffnlp/twitter-roberta-base-sentiment"
     )
 
-dic = {'title': 'Non-profitable Trader.😂😭 #memecoin #crypto #bitcoin #meme #pino #solana #trading #business #money', 
-       'description': '', 'video_id': 'trVmDXMaj-M'}
-
-tu = classifier(dic["title"])
-print(tu)
-
 def sentimentToNum(text):
     if text[0]["label"] == "LABEL_1":
         return text[0]["score"]
@@ -35,4 +29,13 @@ def sentimentCalc(dict):
         )
     
     return result
-    
+
+def proportionSentiments(li):
+    positive = 0
+    for i in li:
+        if i > 0: 
+            positive += 1
+    return positive/len(li)
+
+def meanSentiments(li):
+    return sum(i for i in li)/len(li)
