@@ -2,7 +2,7 @@ from src.yt import searchByTopic
 from src.yt import extract_Title_Desc
 from src.yt import captionExtractor
 from src.yt import captionConverter, addCaptionToTitleDesc
-from src.nlp import sentimentToNum, sentimentCalc
+from src.nlp import sentimentCalc, proportionSentiments, meanSentiments
 import json
 
 
@@ -24,7 +24,8 @@ def main():
     out2 = sentimentCalc(out4)
     print(out2)
 
-    
+    print(proportionSentiments(out2))
+    print(meanSentiments(out2))
 
 if __name__ == "__main__":
     main()
