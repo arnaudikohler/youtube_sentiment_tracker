@@ -54,5 +54,11 @@ def captionConverter(li):
                 )
             result.append(" ".join(captions))
         else:
-            pass
+            result.append(0)
     return result
+
+def addCaptionToTitleDesc(li, captions):
+    for video, cap in zip(li, captions):
+        video["captions"] = cap
+    return li
+    

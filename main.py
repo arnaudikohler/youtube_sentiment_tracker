@@ -1,8 +1,8 @@
 from src.yt import searchByTopic
 from src.yt import extract_Title_Desc
 from src.yt import captionExtractor
-from src.yt import captionConverter
-# from src.nlp import sentimentizer
+from src.yt import captionConverter, addCaptionToTitleDesc
+from src.nlp import sentimentToNum, sentimentCalc
 import json
 
 
@@ -16,10 +16,15 @@ def main():
         content = [json.loads(line) for line in f2]
     
     out = extract_Title_Desc(response)
-    print(out)
+    # print(out)
+    out3 = captionConverter(content)
+    out4 = addCaptionToTitleDesc(out, out3)
+    # print(out4)
+    # print(out3)
+    out2 = sentimentCalc(out4)
+    print(out2)
 
-    for i in out:
-        print(i["title"])
+    
 
 if __name__ == "__main__":
     main()
