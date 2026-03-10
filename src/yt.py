@@ -34,10 +34,26 @@ def captionExtractor(video_id):
     for i in video_id:
         try: 
             result.append(
-                ytt_api.fetch(i[2])
+                ytt_api.fetch(i[2]).to_raw_data()
             )
         except Exception as e:
+            print("Exception:", e)
             result.append(
                 None
             )
-    print(result)
+    
+    return result
+
+def captionConverter(li): 
+    result = []
+    for video in li: 
+        if video is not None:
+            captions = []
+            for segment in video: 
+                captions.append(
+                    segment["text"]
+                )
+            result.append(" ".join(captions))
+        else:
+            pass
+    return result
