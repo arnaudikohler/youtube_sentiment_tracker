@@ -3,6 +3,9 @@ from src.yt import extract_Title_Desc
 from src.yt import captionExtractor
 from src.yt import captionConverter, addCaptionToTitleDesc
 from src.nlp import sentimentCalc, proportionSentiments, meanSentiments
+from src.db import create_table, insert_sentiment
+from datetime import date
+import yfinance as yf
 import json
 
 
@@ -20,6 +23,21 @@ def main():
     print(out5)
     print(proportionSentiments(out6))
     print(meanSentiments(out6))
+
+    btc = yf.Ticker("BTC-USD")
+    price = btc.history(period="1d")["Close"].iloc[-1]  
+
+    create_table()
+
+    today = date.today().isoformat()
+
+    insert_sentiment(
+        today,
+        "bitcoin",
+        meanSentiments(out6),
+        proportionSentiments(out6),
+        price
+    )
 
     # with open("data/test_search_response.json") as f:
     #     response = json.load(f)
