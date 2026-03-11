@@ -1,6 +1,8 @@
 from src.config import YOUTUBE_API_KEY
 from googleapiclient.discovery import build
 from youtube_transcript_api import YouTubeTranscriptApi
+import time
+import random
 
 def searchByTopic(topic, max_results):
     youtube = build("youtube", "v3", developerKey=YOUTUBE_API_KEY)
@@ -9,13 +11,13 @@ def searchByTopic(topic, max_results):
         part="snippet",
         type="video",
         order="relevance",
+        publishedAfter="2026-03-10T00:00:00Z",
         maxResults=max_results
     )
 
     response = request.execute()
 
     return response
-
 
 def extract_Title_Desc(video_list): 
     result = [] 
@@ -35,8 +37,9 @@ def captionExtractor(video_id):
             result.append(
                 ytt_api.fetch(i[2]).to_raw_data()
             )
-        except Exception as e:
-            print("Exception:", e)
+            time.sleep(random.uniform(3, 5))
+        except Exception as e: 
+            print("Exception:", e, {type(e).__name__})
             result.append(
                 None
             )
