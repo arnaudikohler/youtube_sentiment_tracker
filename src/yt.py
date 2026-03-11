@@ -3,6 +3,7 @@ from googleapiclient.discovery import build
 from youtube_transcript_api import YouTubeTranscriptApi
 import time
 import random
+import datetime, timedelta, timezone
 
 def searchByTopic(topic, max_results):
     youtube = build("youtube", "v3", developerKey=YOUTUBE_API_KEY)
@@ -10,8 +11,8 @@ def searchByTopic(topic, max_results):
         q=topic,
         part="snippet",
         type="video",
-        order="relevance",
-        publishedAfter="2026-03-10T00:00:00Z",
+        order="viewCount",
+        published_after = (datetime.now(timezone.utc) - timedelta(days=1)).strftime("%Y-%m-%dT%H:%M:%SZ"),
         maxResults=max_results
     )
 
