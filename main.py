@@ -12,7 +12,7 @@ import json
 
 def main():
     
-    out = searchByTopic("bitcoin", 5)
+    out = searchByTopic("bitcoin", 10)
     out2 = extract_Title_Desc(out)
     print(out2)
     out3 = captionExtractor(out2)
