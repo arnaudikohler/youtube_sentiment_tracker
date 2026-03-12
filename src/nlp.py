@@ -13,12 +13,11 @@ def sentimentToNum(text):
     else:
         return -text[0]["score"]
     
-def sentimentCalc(diction):
-    titleWeight = 0.7
-    captionWeight = 0.15
-    descriptionWeight = 0.15
+def sentimentCalc(videos):
+
     result = []
-    for video in diction:
+
+    for video in videos:
 
         title = checkAndTranslate(video["title"])
         description = checkAndTranslate(video["description"])
@@ -26,16 +25,37 @@ def sentimentCalc(diction):
 
         titleScore = sentimentToNum(classifier(title))
         descriptionScore = sentimentToNum(classifier(description))
-        
+
         if captions == 0:
             captionScore = 0
         else:
             captions = checkAndTranslate(captions)
-            captionScore = sentimentToNum(classifier(captions, truncation=True, max_length=512))
-        result.append(
-            titleWeight * titleScore + descriptionWeight * descriptionScore + captionWeight * captionScore
+            captionScore = sentimentToNum(
+                classifier(captions, truncation=True, max_length=512)
+            )
+
+        result.append({
+            "video_id": video["video_id"],
+            "title_score": titleScore,
+            "description_score": descriptionScore,
+            "caption_score": captionScore
+        })
+
+    return result
+
+def weightedSentiment(scores, titleWeight, descWeight, captionWeight):
+    result = []
+
+    for video in scores:
+
+        score = (
+            titleWeight * video["title_score"]
+            + descWeight * video["description_score"]
+            + captionWeight * video["caption_score"]
         )
-    
+
+        result.append(score)
+
     return result
 
 def proportionSentiments(li):
