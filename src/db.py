@@ -20,6 +20,24 @@ def create_table():
     connection.commit()
     connection.close()
 
+def create_table_raw():
+    connection = sqlite3.connect("data/rawdata.db")
+    cursor = connection.cursor()
+    command1 = """
+    CREATE TABLE IF NOT EXISTS raw (
+    date TEXT,
+    topic TEXT,
+    video_id TEXT,
+    title_score REAL,
+    description_score REAL,
+    caption_score REAL, 
+    PRIMARY KEY (date, topic, video_id)
+    )
+    """
+    cursor.execute(command1)
+    connection.commit()
+    connection.close()
+
 def insert_sentiment(date, topic, sentiment_mean, positive_ratio, price):
 
     connection = sqlite3.connect(DB_PATH)
@@ -42,7 +60,14 @@ import pandas as pd
 
 conn = sqlite3.connect("data/sentiment_tracker.db")
 
+cursor = conn.cursor()
+
+cursor.execute("DELETE FROM sentiment WHERE topic='bitcoin'")
+conn.commit()
+
 df = pd.read_sql_query("SELECT * FROM sentiment", conn)
 
 print(df)
+
+conn.close()
 
