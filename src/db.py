@@ -2,6 +2,7 @@ import sqlite3
 import pandas as pd
 
 DB_PATH = "data/sentiment_tracker.db"
+DB_PATH_RAW = "data/rawdata.db"
 
 def create_table():
     connection = sqlite3.connect("data/sentiment_tracker.db")
@@ -50,6 +51,22 @@ def insert_sentiment(date, topic, sentiment_mean, positive_ratio, price):
         VALUES (?, ?, ?, ?, ?)
         """,
         (date, topic, sentiment_mean, positive_ratio, price),
+    )
+
+    connection.commit()
+    connection.close()
+
+def insert_raw(date, topic, video_id, title_score, desc_score, cap_score):
+    connection = sqlite3.connect(DB_PATH_RAW)
+    cursor = connection.cursor()
+
+    cursor.execute(
+        """
+        INSERT OR REPLACE INTO raw
+        (date, topic, video_id, title_score, description_score, caption_score)
+        VALUES (?, ?, ?, ?, ?, ?)
+        """,
+        (date, topic, video_id, title_score, desc_score, cap_score)
     )
 
     connection.commit()
