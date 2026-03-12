@@ -12,17 +12,16 @@ import json
 
 def main():
     
-    out = searchByTopic("bitcoin", 10)
-    out2 = extract_Title_Desc(out)
-    print(out2)
-    out3 = captionExtractor(out2)
-    out4 = captionConverter(out3)
-    out5 = addCaptionToTitleDesc(out2, out4)
-    out6 = sentimentCalc(out5)
-    print(out6)
-    print(out5)
-    print(proportionSentiments(out6))
-    print(meanSentiments(out6))
+    sresults_btc = searchByTopic("bitcoin", 10)
+    videos = extract_Title_Desc(sresults_btc)
+    print(videos)
+    raw_captions = captionExtractor(videos)
+    caption_txt = captionConverter(raw_captions)
+    videos_with_captions = addCaptionToTitleDesc(videos, caption_txt)
+    sentiment_scores = sentimentCalc(videos_with_captions)
+    print(sentiment_scores)
+    print(proportionSentiments(sentiment_scores))
+    print(meanSentiments(sentiment_scores))
 
     btc = yf.Ticker("BTC-USD")
     price = btc.history(period="1d")["Close"].iloc[-1]  
@@ -34,26 +33,10 @@ def main():
     insert_sentiment(
         today,
         "bitcoin",
-        meanSentiments(out6),
-        proportionSentiments(out6),
+        meanSentiments(sentiment_scores),
+        proportionSentiments(sentiment_scores),
         price
     )
-
-    # with open("data/test_search_response.json") as f:
-    #     response = json.load(f)
-    
-    # with open("data/captions.json", "r") as f2:
-    #     content = [json.loads(line) for line in f2]
-    
-    # out = extract_Title_Desc(response)
-    # out3 = captionConverter(content)
-    # out4 = addCaptionToTitleDesc(out, out3)
-    # print(out4)
-    # print(out3)
-    # out2 = sentimentCalc(out4)
-    # print(out2)
-    # print(proportionSentiments(out2))
-    # print(meanSentiments(out2))
 
 if __name__ == "__main__":
     main()
