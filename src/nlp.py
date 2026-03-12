@@ -48,7 +48,11 @@ def proportionSentiments(li):
 def meanSentiments(li):
     return sum(i for i in li)/len(li)
 
-def checkAndTranslate(text): 
+def checkAndTranslate(text):
+    MAX_CHARS = 600
+
+    text = text[:MAX_CHARS]
+
     lang = detect(text)
     if lang != "en":
         text = GoogleTranslator(source = 'auto', target = "en").translate(text)

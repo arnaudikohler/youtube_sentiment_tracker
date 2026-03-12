@@ -30,21 +30,25 @@ def extract_Title_Desc(video_list):
         })
     return result
 
-def captionExtractor(video_id):
+def captionExtractor(video_list):
     result = []
     ytt_api = YouTubeTranscriptApi()
-    for i in video_id:
-        try: 
-            result.append(
-                ytt_api.fetch(i["video_id"]).to_raw_data()
-            )
-            time.sleep(random.uniform(3, 5))
-        except Exception as e: 
+    for video in video_list:
+        try:
+            transcript_list = ytt_api.list(video["video_id"])
+            try:
+                transcript = transcript_list.find_manually_created_transcript(['en'])
+            except:
+                try:
+                    transcript = transcript_list.find_generated_transcript(['en'])
+                except:
+                    transcript = next(iter(transcript_list))
+            captions = transcript.fetch().to_raw_data()
+            result.append(captions[:50])
+            time.sleep(random.uniform(3,5))
+        except Exception as e:
             print("Exception:", e, {type(e).__name__})
-            result.append(
-                None
-            )
-    
+            result.append(None)
     return result
 
 def captionConverter(li): 
