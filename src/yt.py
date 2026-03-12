@@ -3,7 +3,7 @@ from googleapiclient.discovery import build
 from youtube_transcript_api import YouTubeTranscriptApi
 import time
 import random
-import datetime, timedelta, timezone
+from datetime import datetime, timedelta, timezone
 
 def searchByTopic(topic, max_results):
     youtube = build("youtube", "v3", developerKey=YOUTUBE_API_KEY)
@@ -12,7 +12,7 @@ def searchByTopic(topic, max_results):
         part="snippet",
         type="video",
         order="viewCount",
-        published_after = (datetime.now(timezone.utc) - timedelta(days=1)).strftime("%Y-%m-%dT%H:%M:%SZ"),
+        publishedAfter = (datetime.now(timezone.utc) - timedelta(days=1)).strftime("%Y-%m-%dT%H:%M:%SZ"),
         maxResults=max_results
     )
 
@@ -36,7 +36,7 @@ def captionExtractor(video_id):
     for i in video_id:
         try: 
             result.append(
-                ytt_api.fetch(i[2]).to_raw_data()
+                ytt_api.fetch(i["video_id"]).to_raw_data()
             )
             time.sleep(random.uniform(3, 5))
         except Exception as e: 

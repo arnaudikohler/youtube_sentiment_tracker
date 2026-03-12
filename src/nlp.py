@@ -1,4 +1,6 @@
 from transformers import pipeline
+from langdetect import detect
+from deep_translator import GoogleTranslator
 
 classifier = pipeline(
     "sentiment-analysis",
@@ -11,18 +13,24 @@ def sentimentToNum(text):
     else:
         return -text[0]["score"]
     
-def sentimentCalc(dict):
+def sentimentCalc(diction):
     titleWeight = 0.7
     captionWeight = 0.15
     descriptionWeight = 0.15
     result = []
-    for video in dict:
-        titleScore = sentimentToNum(classifier(video["title"]))
-        descriptionScore = sentimentToNum(classifier(video["description"]))
+    for video in diction:
+
+        title = checkAndTranslate(video["title"])
+        description = checkAndTranslate(video["description"])
         captions = video["captions"]
+
+        titleScore = sentimentToNum(classifier(title))
+        descriptionScore = sentimentToNum(classifier(description))
+        
         if captions == 0:
             captionScore = 0
         else:
+            captions = checkAndTranslate(captions)
             captionScore = sentimentToNum(classifier(captions, truncation=True, max_length=512))
         result.append(
             titleWeight * titleScore + descriptionWeight * descriptionScore + captionWeight * captionScore
@@ -39,3 +47,9 @@ def proportionSentiments(li):
 
 def meanSentiments(li):
     return sum(i for i in li)/len(li)
+
+def checkAndTranslate(text): 
+    lang = detect(text)
+    if lang != "en":
+        text = GoogleTranslator(source = 'auto', target = "en").translate(text)
+    return text
