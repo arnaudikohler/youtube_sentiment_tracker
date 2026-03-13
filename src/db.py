@@ -11,10 +11,13 @@ def create_table():
     CREATE TABLE IF NOT EXISTS sentiment (
     date TEXT,
     topic TEXT,
+    title_weight REAL,
+    description_weight REAL,
+    caption_weight REAL,
     sentiment_mean REAL,
     positive_ratio REAL,
     price REAL,
-    PRIMARY KEY (date, topic)
+    PRIMARY KEY (date, topic, title_weight, description_weight, caption_weight)
     )
     """
     cursor.execute(command1)
@@ -39,7 +42,7 @@ def create_table_raw():
     connection.commit()
     connection.close()
 
-def insert_sentiment(date, topic, sentiment_mean, positive_ratio, price):
+def insert_sentiment(date, topic, sentiment_mean, positive_ratio, price, title_weight, description_weight, caption_weight):
 
     connection = sqlite3.connect(DB_PATH)
     cursor = connection.cursor()
@@ -47,10 +50,10 @@ def insert_sentiment(date, topic, sentiment_mean, positive_ratio, price):
     cursor.execute(
         """
         INSERT OR REPLACE INTO sentiment
-        (date, topic, sentiment_mean, positive_ratio, price)
-        VALUES (?, ?, ?, ?, ?)
+        (date, topic, sentiment_mean, positive_ratio, price, title_weight, description_weight, caption_weight)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         """,
-        (date, topic, sentiment_mean, positive_ratio, price),
+        (date, topic, sentiment_mean, positive_ratio, price, title_weight, description_weight, caption_weight),
     )
 
     connection.commit()
@@ -66,7 +69,7 @@ def insert_raw(date, topic, video_id, title_score, desc_score, cap_score):
         (date, topic, video_id, title_score, description_score, caption_score)
         VALUES (?, ?, ?, ?, ?, ?)
         """,
-        (date, topic, video_id, title_score, desc_score, cap_score)
+        (date, topic, video_id, title_score, desc_score, cap_score),
     )
 
     connection.commit()
@@ -75,16 +78,32 @@ def insert_raw(date, topic, video_id, title_score, desc_score, cap_score):
 
 import pandas as pd
 
-conn = sqlite3.connect("data/sentiment_tracker.db")
+# --- use the following to print the db storing the data to see how they look --- 
 
-cursor = conn.cursor()
+# conn = sqlite3.connect("data/sentiment_tracker.db")
+# conn2 = sqlite3.connect("data/rawdata.db")
 
-cursor.execute("DELETE FROM sentiment WHERE topic='bitcoin'")
-conn.commit()
+# cursor = conn.cursor()
 
-df = pd.read_sql_query("SELECT * FROM sentiment", conn)
+# df_sentiment = pd.read_sql_query("SELECT * FROM sentiment", conn)
+# df_raw = pd.read_sql_query("SELECT * FROM raw", conn2)
 
-print(df)
+# print(df_sentiment)
+# print("----------")
+# print(df_raw)
 
-conn.close()
+# conn.close()
+# conn2.close()
+
+# ---Use the following to delete a table---
+# make sure to change table name to which one you want to delete
+# sentiment for aggregate data, raw for raw data
+
+# connection = sqlite3.connect("data/sentiment_tracker.db")
+# cursor = connection.cursor()
+
+# cursor.execute("DROP TABLE IF EXISTS sentiment")
+
+# connection.commit()
+# connection.close()
 
