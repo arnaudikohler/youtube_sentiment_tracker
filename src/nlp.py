@@ -30,8 +30,11 @@ def sentimentCalc(videos):
             captionScore = 0
         else:
             captions = checkAndTranslate(captions)
-            captionScore = sentimentToNum(
-                classifier(captions, truncation=True, max_length=512)
+            if captions == "":
+                captionScore = 0
+            else:
+                captionScore = sentimentToNum(
+                    classifier(captions, truncation=True, max_length=512)
             )
 
         result.append({
@@ -70,10 +73,15 @@ def meanSentiments(li):
 
 def checkAndTranslate(text):
     MAX_CHARS = 600
-
+    if not text:
+        return ""
+    
     text = text[:MAX_CHARS]
 
     lang = detect(text)
     if lang != "en":
-        text = GoogleTranslator(source = 'auto', target = "en").translate(text)
+        try:
+            text = GoogleTranslator(source = 'auto', target = "en").translate(text)
+        except Exception:
+            return ""
     return text
