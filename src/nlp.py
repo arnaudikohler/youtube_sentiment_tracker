@@ -21,7 +21,7 @@ def sentimentCalc(videos):
 
         title = checkAndTranslate(video["title"])
         description = checkAndTranslate(video["description"])
-        captions = video["captions"]
+        captions = video.get("captions", 0)
 
         titleScore = sentimentToNum(classifier(title))
         descriptionScore = sentimentToNum(classifier(description))

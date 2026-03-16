@@ -1,12 +1,12 @@
 from src.yt import searchByTopic
 from src.yt import extract_Title_Desc
-from src.yt import captionExtractor
-from src.yt import captionConverter, addCaptionToTitleDesc
 from src.nlp import sentimentCalc, proportionSentiments, meanSentiments, weightedSentiment
 from src.db import create_table, insert_sentiment, create_table_raw, insert_raw
 from datetime import date
 import yfinance as yf
 
+# ("nvidia", "NVDA")
+# ("bitcoin", "BTC-USD")
 
 def main():
 
@@ -25,15 +25,11 @@ def main():
 
         print(f"\nProcessing topic: {topic}")
 
-        sresults = searchByTopic(topic, 10)
+        sresults = searchByTopic(topic, 30)
         videos = extract_Title_Desc(sresults)
 
-        raw_captions = captionExtractor(videos)
-        caption_txt = captionConverter(raw_captions)
-        videos_with_captions = addCaptionToTitleDesc(videos, caption_txt)
-
         # ---- compute raw sentiment components ----
-        sentiment_components = sentimentCalc(videos_with_captions)
+        sentiment_components = sentimentCalc(videos)
 
         stock = yf.Ticker(ticker)
         price = stock.history(period="1d")["Close"].iloc[-1]
@@ -51,11 +47,9 @@ def main():
 
         # ---- weight experiments ----
         weight_tests = [
-            ("baseline", 0.7, 0.15, 0.15),
-            ("title_focus", 0.9, 0.05, 0.05),
-            ("balanced", 0.33, 0.33, 0.34),
-            ("caption_focus", 0.2, 0.2, 0.6),
-            ("title_desc", 0.6, 0.4, 0.0)
+            ("title_focus", 0.9, 0.1, 0),
+            ("balanced", 0.5, 0.5, 0),  
+            ("title_only", 1.0, 0, 0)
         ]
 
         for name, tw, dw, cw in weight_tests:
