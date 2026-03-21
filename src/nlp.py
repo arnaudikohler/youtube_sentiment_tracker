@@ -7,11 +7,6 @@ classifier = pipeline(
     model="cardiffnlp/twitter-roberta-base-sentiment"
     )
 
-print(classifier("negative"))
-print(classifier("positive"))
-print(classifier("the meeting is at 3PM."))
-
-
 def sentimentToNum(text):
     if text[0]["label"] == "LABEL_2": # positive
         return text[0]["score"]
@@ -84,6 +79,11 @@ def checkAndTranslate(text):
         return ""
     
     text = text[:MAX_CHARS]
+
+    try:
+        lang = detect(text)
+    except Exception:
+        return ""
 
     lang = detect(text)
     if lang != "en":
