@@ -7,11 +7,18 @@ classifier = pipeline(
     model="cardiffnlp/twitter-roberta-base-sentiment"
     )
 
+print(classifier("negative"))
+print(classifier("positive"))
+print(classifier("the meeting is at 3PM."))
+
+
 def sentimentToNum(text):
-    if text[0]["label"] == "LABEL_1":
+    if text[0]["label"] == "LABEL_2": # positive
         return text[0]["score"]
-    else:
+    elif text[0]["label"] == "LABEL_0": # negative
         return -text[0]["score"]
+    else: # nuetral
+        return 0.0
     
 def sentimentCalc(videos):
 
